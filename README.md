@@ -11,7 +11,7 @@ These instructions get neovim setup for
 
 ## Install the rust toolchains
 Install [rustup](https://www.rust-lang.org/tools/install)
-Add ~/.cargo/bin to PATH `echo "~/.cargo/bin >> ~/.bashrc"`
+Add ~/.cargo/bin to PATH `echo "~/.cargo/bin" >> ~/.bashrc`
 
 ### RLS
 Rust Language Server [RLS](https://github.com/rust-lang/rls)
@@ -32,7 +32,7 @@ cargo +nightly install racer
 It is recommeded to set `RUST_SRC_PATH` for speed it isn't needed
 
 ```bash
-echo "export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src" >> ~/.bashrc
+echo "export RUST_SRC_PATH=\"$(rustc --print sysroot)/lib/rustlib/src/rust/src\"" >> ~/.bashrc
 ```
 
 ### rustfmt
@@ -58,8 +58,7 @@ python3 -m pip install -U pynvim msgpack
 [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```bash
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
 Install neovim
