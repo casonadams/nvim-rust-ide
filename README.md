@@ -71,6 +71,12 @@ Update `~/.config/nvim/init.vim` using init.vim file in source repo
 cp init.vim ~/.config/nvim/
 ```
 
+Install patched powerline font (Optional)
+
+```bash
+curl -LO https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete%20Mono.ttf
+```
+
 Start neovim
 
 ```bash
@@ -78,6 +84,41 @@ nvim
 ```
 
 Inside neovim install plugins `:PlugInstall`
+
+## Alacritty terminal (Optional)
+
+Install alacritty terminal
+[Alacritty](https://github.com/alacritty/alacritty)
+
+Copy `alacritty.yml` from repo
+
+```bash
+cp alacritty.yml ~/.config/alacritty/
+```
+
+## Tmux (Optional)
+
+Install tmux
+[Tmux](https://github.com/tmux/tmux)
+
+Copy `tmux.conf` from repo
+
+```bash
+cp tmux.conf ~/.tmux.conf
+```
+
+```bash
+tmux
+```
+
+`ctrl+b I` to install plugins
+`ctrl+b r` to reload tmux
+
+###  Refs
+space-theme uses [gitmux](https://github.com/arl/gitmux)
+[tmux-vi-yank](https://github.com/casonadams/tmux-vi-yank)
+[tmux-space-theme](https://github.com/casonadams/tmux-space-theme)
+[tmux-vi-navigation](https://github.com/casonadams/tmux-vi-navigation)
 
 ## Usage
 
