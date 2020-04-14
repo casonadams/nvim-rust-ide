@@ -119,15 +119,14 @@ tmux
 
 ## Usage
 
-| Command  | Result          |
-| -------  | ------          |
-| SPACE rx | rust-doc        |
-| SPACE rd | rust-def        |
-| SPACE rs | rust-def-split  |
-| SPACE /  | Line comment    |
-| F3       | Toggle NERDTree |
-| F2       | Toggle Tagbar   |
-| F1       | Update tags     |
-| =        | Buffer Next     |
-| -        | Buffer Previous |
+| Command | Result          |
+| ------- | ------          |
+| K       | show doc hover  |
+| gd      | go to def       |
+| gcc     | Line comment    |
+| F3      | Toggle NERDTree |
+| F2      | Toggle Tagbar   |
+| F1      | Update tags     |
+| SPACE = | Buffer Next     |
+| SPACE - | Buffer Previous |
 
