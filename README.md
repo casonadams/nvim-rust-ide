@@ -58,7 +58,7 @@ python3 -m pip install -U pynvim msgpack
 [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```bash
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
 Install neovim
@@ -72,9 +72,7 @@ cp init.vim ~/.config/nvim/
 
 Install patched powerline font (Optional)
 
-```bash
-curl -LO https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete%20Mono.ttf
-```
+[SauceCodePro](https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete%20Mono.ttf)
 
 Start neovim
 
