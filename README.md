@@ -53,6 +53,15 @@ Need to have `msgpack` >= 1.0.0
 python3 -m pip install -U pynvim msgpack
 ```
 
+### nodejs install
+
+coc.nvim uses nodejs.  Some may not like nodejs installed.  If that is the case use deoplete.  There are some commits in the repo that have examples of how to use it with rust.
+[coc.nvim](https://github.com/neoclide/coc.nvim)
+
+```bash
+curl -sL install-node.now.sh/lts | bash
+```
+
 ### Neovim
 
 [vim-plug](https://github.com/junegunn/vim-plug)
