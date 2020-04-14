@@ -90,6 +90,7 @@ nvim
 ```
 
 Inside neovim install plugins `:PlugInstall`
+Inside neovim install Coc `:CocInstall`
 
 ## Alacritty terminal (Optional)
 
