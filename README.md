@@ -112,9 +112,7 @@ tmux
 `ctrl+b r` to reload tmux
 
 ###  Refs
-- space-theme uses [gitmux](https://github.com/arl/gitmux)
 - [tmux-vi-yank](https://github.com/casonadams/tmux-vi-yank)
-- [tmux-space-theme](https://github.com/casonadams/tmux-space-theme)
 - [tmux-vi-navigation](https://github.com/casonadams/tmux-vi-navigation)
 
 ## Usage
