@@ -121,6 +121,26 @@ tmux
 `ctrl+b I` to install plugins
 `ctrl+b r` to reload tmux
 
+## Prettier Formatter (downside is it relies on editorconfig and not rustfmt.toml)
+
+[prettier](https://github.com/neoclide/coc-prettier)
+cd ~/.config/coc/extensions
+
+```bash
+npm install coc-prettier
+```
+
+Open nvim
+`:CocConfig`
+
+Update the file
+
+```json
+{
+    "coc.preferences.formatOnSaveFiletypes": ["*"]
+}
+```
+
 ###  Refs
 - [tmux-vi-yank](https://github.com/casonadams/tmux-vi-yank)
 - [tmux-vi-navigation](https://github.com/casonadams/tmux-vi-navigation)

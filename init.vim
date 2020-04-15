@@ -1,6 +1,8 @@
 " Installs Plug Plugin Manager
 call plug#begin()
   Plug 'airblade/vim-gitgutter'
+  Plug 'cespare/vim-toml'
+  Plug 'chazy/dirsettings'
   Plug 'editorconfig/editorconfig-vim'
   Plug 'junegunn/vim-easy-align'
   Plug 'kien/ctrlp.vim'
@@ -9,12 +11,20 @@ call plug#begin()
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
   Plug 'tpope/vim-commentary'
-  Plug 'cespare/vim-toml'
   Plug 'vim-airline/vim-airline'
-  Plug 'w0rp/ale'
+  Plug 'vimwiki/vimwiki'
 call plug#end()
 
 let mapleader = "\<Space>"
+
+let wiki_1 = {}
+let wiki_1.path = '~/vimwiki/'
+let wiki_1.syntax = 'markdown'
+let wiki_1.ext = '.md'
+let wiki_1.index = 'Notes'
+
+let g:vimwiki_list = [wiki_1]
+let g:vimwiki_ext2syntax = {'.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
 
 syntax on
 set title
@@ -23,6 +33,7 @@ set mouse=a
 set noswapfile
 set nobackup
 set nowritebackup
+set nocompatible
 
 set completeopt=longest,menuone
 set wrap
@@ -57,19 +68,6 @@ nmap <Leader>- :bp<CR>
 
 nmap <silent> <F2> :TagbarToggle<CR>
 nmap <silent> <F3> :NERDTreeToggle<CR>
-
-let g:ale_fixers = {
-      \   'rust': ['rustfmt'],
-      \}
-
-let g:ale_linters = {
-      \'rust': ['rls'],
-      \}
-
-let g:ale_rust_rls_toolchain = 'stable'
-
-let g:ale_fix_on_save = 1
-let g:airline#extensions#ale#enabled = 1
 
 " Give more space for displaying messages.
 set cmdheight=2
