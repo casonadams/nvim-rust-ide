@@ -1,19 +1,23 @@
 # vim-rust-ide
+
 My attempt to make vim more rust friendly from an IDE perspective
 
 These instructions get neovim setup for
-* Autocompletion
-* Live-linting
-* Autoformatting
-* Syntax-highlighting
-* hover docs
-* jump to def
+
+- Autocompletion
+- Live-linting
+- Autoformatting
+- Syntax-highlighting
+- hover docs
+- jump to def
 
 ## Install the rust toolchains
+
 Install [rustup](https://www.rust-lang.org/tools/install)
 Add ~/.cargo/bin to PATH `echo "~/.cargo/bin" >> ~/.bashrc`
 
 ### RLS
+
 Rust Language Server [RLS](https://github.com/rust-lang/rls)
 
 ```bash
@@ -22,7 +26,9 @@ rustup toolchain install nightly
 rustup default stable
 rustup component add rls rust-analysis rust-src
 ```
+
 ### Racer
+
 Rust Code Completion utility [Racer](https://github.com/racer-rust/racer)
 
 ```bash
@@ -44,6 +50,7 @@ cargo install rustfmt-nightly
 ```
 
 ### python modules
+
 Most operating systems come with python installed
 [Python](https://github.com/python/cpython)
 
@@ -55,7 +62,7 @@ python3 -m pip install -U pynvim msgpack
 
 ### nodejs install
 
-coc.nvim uses nodejs.  Some may not like nodejs installed.  If that is the case use deoplete.  There are some commits in the repo that have examples of how to use it with rust.
+coc.nvim uses nodejs. Some may not like nodejs installed. If that is the case use deoplete. There are some commits in the repo that have examples of how to use it with rust.
 [coc.nvim](https://github.com/neoclide/coc.nvim)
 
 ```bash
@@ -137,18 +144,25 @@ Update the file
 
 ```json
 {
-    "coc.preferences.formatOnSaveFiletypes": ["*"]
+  "coc.preferences.formatOnSaveFiletypes": ["*"]
 }
 ```
 
-###  Refs
+### Install other nice deps
+
+- bat
+- ripgrep
+- fd-find
+
+### Refs
+
 - [tmux-vi-yank](https://github.com/casonadams/tmux-vi-yank)
 - [tmux-vi-navigation](https://github.com/casonadams/tmux-vi-navigation)
 
 ## Usage
 
 | Command | Result          |
-| ------- | ------          |
+| ------- | --------------- |
 | K       | show doc hover  |
 | gd      | go to def       |
 | gcc     | Line comment    |
@@ -157,4 +171,3 @@ Update the file
 | F1      | Update tags     |
 | SPACE = | Buffer Next     |
 | SPACE - | Buffer Previous |
-

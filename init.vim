@@ -2,7 +2,6 @@
 call plug#begin()
   Plug 'airblade/vim-gitgutter'
   Plug 'cespare/vim-toml'
-  Plug 'chazy/dirsettings'
   Plug 'editorconfig/editorconfig-vim'
   Plug 'junegunn/vim-easy-align'
   Plug 'kien/ctrlp.vim'
@@ -12,19 +11,35 @@ call plug#begin()
   Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
   Plug 'tpope/vim-commentary'
   Plug 'vim-airline/vim-airline'
-  Plug 'vimwiki/vimwiki'
+  Plug 'lotabout/skim'
+  Plug 'junegunn/fzf.vim'
 call plug#end()
 
 let mapleader = "\<Space>"
 
-let wiki_1 = {}
-let wiki_1.path = '~/vimwiki/'
-let wiki_1.syntax = 'markdown'
-let wiki_1.ext = '.md'
-let wiki_1.index = 'Notes'
+" Go to index of notes
+nnoremap <leader>ww :e $NOTES_DIR/index.md<CR>cd $NOTES_DIR
 
-let g:vimwiki_list = [wiki_1]
-let g:vimwiki_ext2syntax = {'.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
+" Make Ctrlp use ripgrep
+if executable('rg')
+    let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+    let g:ctrlp_user_caching = 0
+    set grepprg=rg\ --color=never\ --vimgrep
+endif
+
+" My own version, only searches markdown as well using ripgrep
+" Thus depends on grepprg being set to rg
+command! -nargs=1 Ngrep grep "<args>" -g "*.md" $NOTES_DIR
+nnoremap <leader>nn :Ngrep
+
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview('right:70%:wrap', '?'),
+  \   <bang>0)
+
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'),<bang>0)
 
 syntax on
 set title
@@ -52,7 +67,7 @@ filetype plugin on
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_extensions = ['branch', 'tabline']
-let g:airline_powerline_fonts = 0
+let g:airline_powerline_fonts = 1
 
 function! UpdateCtags()
     silent call system("ctags -R -f ./tags .")
