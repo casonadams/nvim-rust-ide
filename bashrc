@@ -34,7 +34,7 @@ git_stuff() {
     git_icon=`if [[ $git_remote == *'gitlab'* ]]; then \
       echo -e "\e[38;5;214m \033[0m"; \
     elif [[ $git_remote == *'github'* ]]; then \
-      echo -e " \033[0m "; \
+      echo -e "\033[0m "; \
     elif [[ $git_remote == *'bitbucket'* ]]; then \
       echo -e "\e[38;5;26m \033[0m"; \
     else \
