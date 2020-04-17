@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
+
+# Requirements
+# - [skim](https://github.com/lotabout/skim)
+# - [bat](https://github.com/sharkdp/bat)
+
+# Usage
+# Copy file to a known path location or add to PATH
+# execute in dir to see list of files and a preview of each
+
 set -e
 
 main() {
@@ -13,7 +22,10 @@ main() {
 
 select_file() {
   given_file="$1"
-  sk -c 'rg --files' --preview='bat --style=plain --color=always --theme=ansi-dark  {}' --preview-window=right:70%:wrap --query="$given_file"
+  sk -c 'rg --files' \
+    --preview='bat --style=plain --color=always --theme=ansi-dark  {}' \
+    --preview-window=right:70%:wrap \
+    --query="$given_file"
 }
 
 main ""
