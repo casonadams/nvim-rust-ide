@@ -4,7 +4,7 @@ call plug#begin()
   Plug 'cespare/vim-toml'
   Plug 'editorconfig/editorconfig-vim'
   Plug 'junegunn/vim-easy-align'
-  Plug 'kien/ctrlp.vim'
+  Plug 'ervandew/supertab'
   Plug 'majutsushi/tagbar'
   Plug 'morhetz/gruvbox'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -20,26 +20,21 @@ let mapleader = "\<Space>"
 " Go to index of notes
 nnoremap <leader>ww :e $NOTES_DIR/index.md<CR>cd $NOTES_DIR
 
-" Make Ctrlp use ripgrep
-if executable('rg')
-    let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-    let g:ctrlp_user_caching = 0
-    set grepprg=rg\ --color=never\ --vimgrep
-endif
-
 " My own version, only searches markdown as well using ripgrep
-" Thus depends on grepprg being set to rg
+"  Thus depends on grepprg being set to rg
 command! -nargs=1 Ngrep grep "<args>" -g "*.md" $NOTES_DIR
 nnoremap <leader>nn :Ngrep
 
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
   \   fzf#vim#with_preview('right:70%:wrap', '?'),
   \   <bang>0)
 
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'),<bang>0)
+
+nnoremap <C-p> :Rg<Cr>
 
 syntax on
 set title

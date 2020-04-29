@@ -2,20 +2,20 @@
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
+  . /etc/bashrc
 fi
 
 # User specific environment
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
 then
-    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+  PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 export PATH
 
 # aliases
 alias vi=nvim
 
-export NOTES_DIR=~/notes
+export NOTES_DIR=~/Dropbox/notes/
 export EDITOR=nvim
 
 PATH="~/.cargo/bin:$PATH"
@@ -47,3 +47,5 @@ prompt() {
   PS1="\e[2m$(date +%H:%M:%S.%3N)\033[0m $(git_stuff)\n\w$ "
 }
 PROMPT_COMMAND=prompt
+
+source <(kubectl completion bash)
