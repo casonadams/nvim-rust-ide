@@ -1,18 +1,36 @@
 FROM fedora:32
 
 RUN dnf install -y \
- neovim \
+ cmake \
+ g++ \
  gcc \
- pip \
- nodejs \
+ gettext-devel \
  git \
+ go \
+ libtool \
+ make \
+ nodejs \
+ pip \
  && dnf clean all \
  ;
 
+ RUN cd /usr/src \
+  && git clone --depth=1 https://github.com/neovim/neovim.git \
+  && cd neovim \
+  && make \
+     -j8 \
+     CMAKE_BUILD_TYPE=RelWithDebInfo \
+     CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=/usr/local" \
+  && make install \
+  && rm -r /usr/src/neovim
+
 RUN python3 -m pip --no-cache-dir install \
-    pynvim \
     autopep8 \
     jedi \
+    pipenv \
+    pylint \
+    pynvim \
+    neovim \
     ;
 
 ENV RUSTUP_HOME=/usr/local/rustup \
@@ -39,14 +57,16 @@ RUN mkdir -p /root/.config/coc/extensions \
  && cd /root/.config/coc/extensions \
  && echo '{"dependencies":{}}'> package.json \
  && npm install \
-    coc-rls \
-    coc-prettier \
-    coc-template \
-    coc-spell-checker \
-    coc-markdownlint \
-    coc-yaml \
-    coc-python \
     coc-diagnostic \
+    coc-go \
+    coc-jedi \
+    coc-markdownlint \
+    coc-prettier \
+    coc-python \
+    coc-rls \
+    coc-spell-checker \
+    coc-template \
+    coc-yaml \
     --no-package-lock \
     --only=prod \
  ;

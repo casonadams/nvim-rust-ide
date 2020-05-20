@@ -49,6 +49,9 @@ set completeopt=longest,menuone
 set wrap
 setlocal wrap
 
+let g:SuperTabMappingForward = '<S-tab>'
+let g:SuperTabMappingBackward = '<tab>'
+
 " Theme
 colorscheme gruvbox
 let g:airline_theme = 'gruvbox'
