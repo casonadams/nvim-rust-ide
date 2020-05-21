@@ -1,10 +1,14 @@
 FROM registry.fedoraproject.org/fedora-minimal:32
 
 RUN microdnf install -y \
+ fd-find \
  gcc \
  git \
- nodejs \
+ make \
  neovim \
+ nodejs \
+ ripgrep \
+ ShellCheck \
  && microdnf clean all \
  ;
 
@@ -46,5 +50,3 @@ RUN mkdir -p /root/.config/coc/extensions \
 }' > /root/.config/nvim/coc-settings.json \
  && echo "alias vi='nvim'" >> /root/.bashrc \
  ;
-
-CMD ["nvim"]

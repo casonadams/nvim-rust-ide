@@ -13,7 +13,8 @@ fi
 export PATH
 
 # aliases
-alias vi=nvim
+alias vi='nvim'
+alias docker=podman
 
 export NOTES_DIR=~/Dropbox/notes/
 export EDITOR=nvim
