@@ -88,17 +88,20 @@ hi StartifySlash   ctermfg=240
 hi StartifySpecial ctermfg=240
 
 let g:startify_custom_header = [
-          \'',
-          \'     /##    /##/##             ',
-          \'     | ##   | #|__/             ',
-          \'     | ##   | ##/##/',
-          \'     |  ## / ##| #| ',
-          \'      \  ## ##/| #| ',
-          \'       \  ###/ | #| ',
-          \'        \  #/  | #| ',
-          \'         \_/   |__|',
-          \'',
-          \ ]
+\"",
+\"       .                ",
+\"     .:c,      .;;.     ",
+\"   .,lool;.    .:ol,.   ",
+\"   ':cllll:.   .;ool,   ",
+\"   ';;:cccc:'   ;lll,   ",
+\"   ';;,'':ccc,..,lll,   ",
+\"   ',,,. .;ccc;';ccc'   ",
+\"   .,,,.  .,::::cccc'   ",
+\"   .,,'.    .;::ccc:'   ",
+\"   ..''.     .,:cc:'.   ",
+\"     ...      .';,.     ",
+\"",
+\ ]
 
 let g:SuperTabMappingForward = '<S-tab>'
 let g:SuperTabMappingBackward = '<tab>'
