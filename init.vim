@@ -1,4 +1,5 @@
-" Installs Plug Plugin Manager
+"------------------------------------------------
+" Plugins START
 call plug#begin()
   Plug 'airblade/vim-gitgutter'
   Plug 'cespare/vim-toml'
@@ -16,6 +17,8 @@ call plug#begin()
   Plug 'mhinz/vim-startify'
   Plug 'ryanoasis/vim-devicons'
 call plug#end()
+" Plugins END
+"------------------------------------------------
 
 "------------------------------------------------
 " Settings START
@@ -44,103 +47,10 @@ command! -nargs=1 Ngrep grep "<args>" -g "*.md" $NOTES_DIR
 nnoremap <leader>nn :Ngrep
 
 nnoremap <C-p> :Rg<Cr>
-" nnoremap <C-e> :Files<Cr>
-command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:70%', 'alt-h'))
-command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'),<bang>0)
+nnoremap <C-e> :Files<Cr>
+command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'))
+command! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'),<bang>0)
 
-
-nnoremap <silent> <C-e> :call FzfFilePreview()<CR>
-
-" ripgrep
-if executable('rg')
-  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
-  set grepprg=rg\ --vimgrep
-  command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
-endif
-
-function! FzfFilePreview()
-  let l:fzf_files_options = '--preview "bat --theme="OneHalfDark" --style=numbers,changes --color always {3..-1} | head -200" --expect=ctrl-v,ctrl-x'
-  let s:files_status = {}
-
-  function! s:cacheGitStatus()
-    let l:gitcmd = 'git -c color.status=false -C ' . $PWD . ' status -s'
-    let l:statusesStr = system(l:gitcmd)
-    let l:statusesSplit = split(l:statusesStr, '\n')
-    for l:statusLine in l:statusesSplit
-      let l:fileStatus = split(l:statusLine, ' ')[0]
-      let l:fileName = split(l:statusLine, ' ')[1]
-      let s:files_status[l:fileName] = l:fileStatus
-    endfor
-  endfunction
-
-  function! s:files()
-    call s:cacheGitStatus()
-    let l:files = split(system($FZF_DEFAULT_COMMAND), '\n')
-    return s:prepend_indicators(l:files)
-  endfunction
-
-  function! s:prepend_indicators(candidates)
-    return s:prepend_git_status(s:prepend_icon(a:candidates))
-  endfunction
-
-  function! s:prepend_git_status(candidates)
-    let l:result = []
-    for l:candidate in a:candidates
-      let l:status = ''
-      let l:icon = split(l:candidate, ' ')[0]
-      let l:filePathWithIcon = split(l:candidate, ' ')[1]
-
-      let l:pos = strridx(l:filePathWithIcon, ' ')
-      let l:file_path = l:filePathWithIcon[pos+1:-1]
-      if has_key(s:files_status, l:file_path)
-        let l:status = s:files_status[l:file_path]
-        call add(l:result, printf('%s %s %s', l:status, l:icon, l:file_path))
-      else
-        " printf statement contains a load-bearing unicode space
-        " the file path is extracted from the list item using {3..-1},
-        " this breaks if there is a different number of spaces, which
-        " means if we add a space in the following printf it breaks.
-        " using a unicode space preserves the spacing in the fzf list
-        " without breaking the {3..-1} index
-        call add(l:result, printf('%s %s %s', ' ', l:icon, l:file_path))
-      endif
-    endfor
-
-    return l:result
-  endfunction
-
-  function! s:prepend_icon(candidates)
-    let l:result = []
-    for l:candidate in a:candidates
-      let l:filename = fnamemodify(l:candidate, ':p:t')
-      let l:icon = WebDevIconsGetFileTypeSymbol(l:filename, isdirectory(l:filename))
-      call add(l:result, printf('%s %s', l:icon, l:candidate))
-    endfor
-
-    return l:result
-  endfunction
-
-  function! s:edit_file(lines)
-    if len(a:lines) < 2 | return | endif
-
-    let l:cmd = get({'ctrl-x': 'split',
-                 \ 'ctrl-v': 'vertical split',
-                 \ 'ctrl-t': 'tabe'}, a:lines[0], 'e')
-
-    for l:item in a:lines[1:]
-      let l:pos = strridx(l:item, ' ')
-      let l:file_path = l:item[pos+1:-1]
-      execute 'silent '. l:cmd . ' ' . l:file_path
-    endfor
-  endfunction
-
-  call skim#run({
-        \ 'source': <sid>files(),
-        \ 'sink*':   function('s:edit_file'),
-        \ 'down':    '40%' })
-
-endfunction
 " fuzzy finding END
 "------------------------------------------------
 
@@ -170,11 +80,11 @@ let g:startify_session_autoload    = 1
 let g:startify_session_persistence = 1
 
 let g:startify_skiplist = [
-        \ 'COMMIT_EDITMSG',
-        \ 'bundle/.*/doc',
-        \ '/data/repo/neovim/runtime/doc',
-        \ '/Users/mhi/local/vim/share/vim/vim74/doc',
-        \ ]
+  \ 'COMMIT_EDITMSG',
+  \ 'bundle/.*/doc',
+  \ '/data/repo/neovim/runtime/doc',
+  \ '/Users/mhi/local/vim/share/vim/vim74/doc',
+  \ ]
 
 let g:startify_custom_header = [ "  Vi the editor of the future" ]
 let g:startify_custom_footer = [ "  Vi the editor of the past" ]
