@@ -4,9 +4,9 @@ call plug#begin()
   Plug 'cespare/vim-toml'
   Plug 'editorconfig/editorconfig-vim'
   Plug 'ervandew/supertab'
-  Plug 'junegunn/fzf.vim'
   Plug 'junegunn/vim-easy-align'
-  Plug 'lotabout/skim'
+  Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
+  Plug 'lotabout/skim.vim'
   Plug 'majutsushi/tagbar'
   Plug 'morhetz/gruvbox'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -14,30 +14,13 @@ call plug#begin()
   Plug 'tpope/vim-commentary'
   Plug 'vim-airline/vim-airline'
   Plug 'mhinz/vim-startify'
+  Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
+"------------------------------------------------
+" Settings START
 let mapleader = "\<Space>"
-
-" Go to index of notes
-nnoremap <leader>ww :e $NOTES_DIR/index.md<CR>cd $NOTES_DIR
-
-" My own version, only searches markdown as well using ripgrep
-"  Thus depends on grepprg being set to rg
-command! -nargs=1 Ngrep grep "<args>" -g "*.md" $NOTES_DIR
-nnoremap <leader>nn :Ngrep
-
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview('right:70%:wrap', '?'),
-  \   <bang>0)
-
-command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'),<bang>0)
-
-nnoremap <C-p> :Rg<Cr>
-
-syntax on
+filetype plugin on
 set title
 set number
 set mouse=a
@@ -45,12 +28,124 @@ set noswapfile
 set nobackup
 set nowritebackup
 set nocompatible
-
 set completeopt=longest,menuone
 set wrap
 setlocal wrap
+" Settings END
+"------------------------------------------------
 
-" Persist undos
+"------------------------------------------------
+" fuzzy finding START
+
+" Go to index of notes
+nnoremap <leader>ww :e $NOTES_DIR/index.md<CR>cd $NOTES_DIR
+
+command! -nargs=1 Ngrep grep "<args>" -g "*.md" $NOTES_DIR
+nnoremap <leader>nn :Ngrep
+
+nnoremap <C-p> :Rg<Cr>
+" nnoremap <C-e> :Files<Cr>
+command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:70%', 'alt-h'))
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'),<bang>0)
+
+
+nnoremap <silent> <C-e> :call FzfFilePreview()<CR>
+
+" ripgrep
+if executable('rg')
+  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
+  set grepprg=rg\ --vimgrep
+  command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+endif
+
+function! FzfFilePreview()
+  let l:fzf_files_options = '--preview "bat --theme="OneHalfDark" --style=numbers,changes --color always {3..-1} | head -200" --expect=ctrl-v,ctrl-x'
+  let s:files_status = {}
+
+  function! s:cacheGitStatus()
+    let l:gitcmd = 'git -c color.status=false -C ' . $PWD . ' status -s'
+    let l:statusesStr = system(l:gitcmd)
+    let l:statusesSplit = split(l:statusesStr, '\n')
+    for l:statusLine in l:statusesSplit
+      let l:fileStatus = split(l:statusLine, ' ')[0]
+      let l:fileName = split(l:statusLine, ' ')[1]
+      let s:files_status[l:fileName] = l:fileStatus
+    endfor
+  endfunction
+
+  function! s:files()
+    call s:cacheGitStatus()
+    let l:files = split(system($FZF_DEFAULT_COMMAND), '\n')
+    return s:prepend_indicators(l:files)
+  endfunction
+
+  function! s:prepend_indicators(candidates)
+    return s:prepend_git_status(s:prepend_icon(a:candidates))
+  endfunction
+
+  function! s:prepend_git_status(candidates)
+    let l:result = []
+    for l:candidate in a:candidates
+      let l:status = ''
+      let l:icon = split(l:candidate, ' ')[0]
+      let l:filePathWithIcon = split(l:candidate, ' ')[1]
+
+      let l:pos = strridx(l:filePathWithIcon, ' ')
+      let l:file_path = l:filePathWithIcon[pos+1:-1]
+      if has_key(s:files_status, l:file_path)
+        let l:status = s:files_status[l:file_path]
+        call add(l:result, printf('%s %s %s', l:status, l:icon, l:file_path))
+      else
+        " printf statement contains a load-bearing unicode space
+        " the file path is extracted from the list item using {3..-1},
+        " this breaks if there is a different number of spaces, which
+        " means if we add a space in the following printf it breaks.
+        " using a unicode space preserves the spacing in the fzf list
+        " without breaking the {3..-1} index
+        call add(l:result, printf('%s %s %s', ' ', l:icon, l:file_path))
+      endif
+    endfor
+
+    return l:result
+  endfunction
+
+  function! s:prepend_icon(candidates)
+    let l:result = []
+    for l:candidate in a:candidates
+      let l:filename = fnamemodify(l:candidate, ':p:t')
+      let l:icon = WebDevIconsGetFileTypeSymbol(l:filename, isdirectory(l:filename))
+      call add(l:result, printf('%s %s', l:icon, l:candidate))
+    endfor
+
+    return l:result
+  endfunction
+
+  function! s:edit_file(lines)
+    if len(a:lines) < 2 | return | endif
+
+    let l:cmd = get({'ctrl-x': 'split',
+                 \ 'ctrl-v': 'vertical split',
+                 \ 'ctrl-t': 'tabe'}, a:lines[0], 'e')
+
+    for l:item in a:lines[1:]
+      let l:pos = strridx(l:item, ' ')
+      let l:file_path = l:item[pos+1:-1]
+      execute 'silent '. l:cmd . ' ' . l:file_path
+    endfor
+  endfunction
+
+  call skim#run({
+        \ 'source': <sid>files(),
+        \ 'sink*':   function('s:edit_file'),
+        \ 'down':    '40%' })
+
+endfunction
+" fuzzy finding END
+"------------------------------------------------
+
+"------------------------------------------------
+" persist START
 set undofile " Maintain undo history between sessions
 set undodir=~/.vim/undodir
 
@@ -59,7 +154,11 @@ autocmd BufReadPost *
   \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
   \ |   exe "normal! g`\""
   \ | endif
+" persist END
+"------------------------------------------------
 
+"------------------------------------------------
+" startify START
 autocmd User Startified setlocal cursorline
 
 let g:startify_enable_special      = 0
@@ -77,38 +176,21 @@ let g:startify_skiplist = [
         \ '/Users/mhi/local/vim/share/vim/vim74/doc',
         \ ]
 
-let g:startify_custom_footer =
-       \ ['', "   Vim is charityware. Please read ':help uganda'.", '']
+let g:startify_custom_header = [ "  Vi the editor of the future" ]
+let g:startify_custom_footer = [ "  Vi the editor of the past" ]
+" startify END
+"------------------------------------------------
 
-hi StartifyBracket ctermfg=240
-hi StartifyFile    ctermfg=147
-hi StartifyFooter  ctermfg=240
-hi StartifyHeader  ctermfg=114
-hi StartifyNumber  ctermfg=215
-hi StartifyPath    ctermfg=245
-hi StartifySlash   ctermfg=240
-hi StartifySpecial ctermfg=240
-
-let g:startify_custom_header = [
-\"",
-\"       .                ",
-\"     .:c,      .;;.     ",
-\"   .,lool;.    .:ol,.   ",
-\"   ':cllll:.   .;ool,   ",
-\"   ';;:cccc:'   ;lll,   ",
-\"   ';;,'':ccc,..,lll,   ",
-\"   ',,,. .;ccc;';ccc'   ",
-\"   .,,,.  .,::::cccc'   ",
-\"   .,,'.    .;::ccc:'   ",
-\"   ..''.     .,:cc:'.   ",
-\"     ...      .';,.     ",
-\"",
-\ ]
-
+"------------------------------------------------
+" SuperTab START
 let g:SuperTabMappingForward = '<S-tab>'
 let g:SuperTabMappingBackward = '<tab>'
+" SuperTab END
+"------------------------------------------------
 
-" Theme
+"------------------------------------------------
+" Theme START
+syntax on
 colorscheme gruvbox
 let g:airline_theme = 'gruvbox'
 set background=dark
@@ -117,27 +199,28 @@ set hidden
 set list
 set listchars=tab:»·,trail:·
 
-filetype plugin on
-
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_extensions = ['branch', 'tabline']
 let g:airline_powerline_fonts = 1
+" Theme END
+"------------------------------------------------
 
-function! UpdateCtags()
-    silent call system("ctags -R -f ./tags .")
-endfunction
-
-nmap <silent> <F1> :call UpdateCtags()<CR>
-
+"------------------------------------------------
+" Remaps START
 " Align GitHub-flavored Markdown tables
 au FileType markdown vmap <Leader><Bslash> :EasyAlign*<Bar><Enter>
 
+" Toggle between buffers
 nmap <Leader>= :bn<CR>
 nmap <Leader>- :bp<CR>
 
 nmap <silent> <F2> :TagbarToggle<CR>
 nmap <silent> <F3> :NERDTreeToggle<CR>
+" Remaps END
+"------------------------------------------------
 
+"------------------------------------------------
+" Coc START
 " Give more space for displaying messages.
 set cmdheight=2
 
@@ -261,3 +344,5 @@ nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+" Coc END
+"------------------------------------------------
