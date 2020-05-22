@@ -1,47 +1,29 @@
-" Installs Plug Plugin Manager
+"------------------------------------------------
+" Plugins START
 call plug#begin()
   Plug 'airblade/vim-gitgutter'
   Plug 'cespare/vim-toml'
   Plug 'editorconfig/editorconfig-vim'
+  Plug 'ervandew/supertab'
   Plug 'junegunn/vim-easy-align'
-  Plug 'kien/ctrlp.vim'
+  Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
+  Plug 'lotabout/skim.vim'
   Plug 'majutsushi/tagbar'
   Plug 'morhetz/gruvbox'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
   Plug 'tpope/vim-commentary'
   Plug 'vim-airline/vim-airline'
-  Plug 'lotabout/skim'
-  Plug 'junegunn/fzf.vim'
+  Plug 'mhinz/vim-startify'
+  Plug 'ryanoasis/vim-devicons'
 call plug#end()
+" Plugins END
+"------------------------------------------------
 
+"------------------------------------------------
+" Settings START
 let mapleader = "\<Space>"
-
-" Go to index of notes
-nnoremap <leader>ww :e $NOTES_DIR/index.md<CR>cd $NOTES_DIR
-
-" Make Ctrlp use ripgrep
-if executable('rg')
-    let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-    let g:ctrlp_user_caching = 0
-    set grepprg=rg\ --color=never\ --vimgrep
-endif
-
-" My own version, only searches markdown as well using ripgrep
-" Thus depends on grepprg being set to rg
-command! -nargs=1 Ngrep grep "<args>" -g "*.md" $NOTES_DIR
-nnoremap <leader>nn :Ngrep
-
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview('right:70%:wrap', '?'),
-  \   <bang>0)
-
-command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'),<bang>0)
-
-syntax on
+filetype plugin on
 set title
 set number
 set mouse=a
@@ -49,12 +31,76 @@ set noswapfile
 set nobackup
 set nowritebackup
 set nocompatible
-
 set completeopt=longest,menuone
 set wrap
 setlocal wrap
+" Settings END
+"------------------------------------------------
 
-" Theme
+"------------------------------------------------
+" fuzzy finding START
+
+" Go to index of notes
+nnoremap <leader>ww :e $NOTES_DIR/index.md<CR>cd $NOTES_DIR
+
+command! -nargs=1 Ngrep grep "<args>" -g "*.md" $NOTES_DIR
+nnoremap <leader>nn :Ngrep
+
+nnoremap <C-p> :Rg<Cr>
+nnoremap <C-e> :Files<Cr>
+command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'))
+command! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'),<bang>0)
+
+" fuzzy finding END
+"------------------------------------------------
+
+"------------------------------------------------
+" persist START
+set undofile " Maintain undo history between sessions
+set undodir=~/.vim/undodir
+
+" Persist cursor
+autocmd BufReadPost *
+  \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+  \ |   exe "normal! g`\""
+  \ | endif
+" persist END
+"------------------------------------------------
+
+"------------------------------------------------
+" startify START
+autocmd User Startified setlocal cursorline
+
+let g:startify_enable_special      = 0
+let g:startify_files_number        = 8
+let g:startify_relative_path       = 1
+let g:startify_change_to_dir       = 1
+let g:startify_update_oldfiles     = 1
+let g:startify_session_autoload    = 1
+let g:startify_session_persistence = 1
+
+let g:startify_skiplist = [
+  \ 'COMMIT_EDITMSG',
+  \ 'bundle/.*/doc',
+  \ '/data/repo/neovim/runtime/doc',
+  \ '/Users/mhi/local/vim/share/vim/vim74/doc',
+  \ ]
+
+let g:startify_custom_header = [ "  Vi the editor of the future" ]
+let g:startify_custom_footer = [ "  Vi the editor of the past" ]
+" startify END
+"------------------------------------------------
+
+"------------------------------------------------
+" SuperTab START
+let g:SuperTabMappingForward = '<S-tab>'
+let g:SuperTabMappingBackward = '<tab>'
+" SuperTab END
+"------------------------------------------------
+
+"------------------------------------------------
+" Theme START
+syntax on
 colorscheme gruvbox
 let g:airline_theme = 'gruvbox'
 set background=dark
@@ -63,27 +109,28 @@ set hidden
 set list
 set listchars=tab:»·,trail:·
 
-filetype plugin on
-
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_extensions = ['branch', 'tabline']
 let g:airline_powerline_fonts = 1
+" Theme END
+"------------------------------------------------
 
-function! UpdateCtags()
-    silent call system("ctags -R -f ./tags .")
-endfunction
-
-nmap <silent> <F1> :call UpdateCtags()<CR>
-
+"------------------------------------------------
+" Remaps START
 " Align GitHub-flavored Markdown tables
 au FileType markdown vmap <Leader><Bslash> :EasyAlign*<Bar><Enter>
 
+" Toggle between buffers
 nmap <Leader>= :bn<CR>
 nmap <Leader>- :bp<CR>
 
 nmap <silent> <F2> :TagbarToggle<CR>
 nmap <silent> <F3> :NERDTreeToggle<CR>
+" Remaps END
+"------------------------------------------------
 
+"------------------------------------------------
+" Coc START
 " Give more space for displaying messages.
 set cmdheight=2
 
@@ -207,3 +254,5 @@ nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+" Coc END
+"------------------------------------------------

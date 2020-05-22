@@ -1,36 +1,30 @@
-FROM fedora:32
+FROM registry.fedoraproject.org/fedora-minimal:32
 
-RUN dnf install -y \
- neovim \
+RUN microdnf install -y \
+ fd-find \
  gcc \
- pip \
- nodejs \
  git \
- && dnf clean all \
+ make \
+ neovim \
+ nodejs \
+ ripgrep \
+ ShellCheck \
+ && microdnf clean all \
  ;
 
-RUN python3 -m pip --no-cache-dir install \
-    pynvim \
-    autopep8 \
-    jedi \
-    ;
-
-ENV RUSTUP_HOME=/usr/local/rustup \
-    CARGO_HOME=/usr/local/cargo \
-    CARGO_TARGET_DIR=/usr/local/target \
-    PATH=/usr/local/cargo/bin:$PATH \
+ENV RUSTUP_HOME=/root/rustup \
+    CARGO_HOME=/root/cargo \
+    PATH=/root/cargo/bin:$PATH \
+    RUST_SRC_PATH=/root/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src \
     USER=root
 
 RUN curl -f -L https://static.rust-lang.org/rustup.sh -O \
  && sh rustup.sh -y \
     --no-modify-path \
     --profile minimal \
- && rustup toolchain install stable \
- && rustup toolchain install nightly \
  && rustup default stable \
  && rustup component add rls rust-analysis rust-src \
  && rm rustup.sh \
- && curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
  ;
 
 COPY init.vim /root/.config/nvim/
@@ -39,29 +33,20 @@ RUN mkdir -p /root/.config/coc/extensions \
  && cd /root/.config/coc/extensions \
  && echo '{"dependencies":{}}'> package.json \
  && npm install \
-    coc-rls \
-    coc-prettier \
-    coc-template \
-    coc-spell-checker \
-    coc-markdownlint \
-    coc-yaml \
-    coc-python \
     coc-diagnostic \
-    --no-package-lock \
+    coc-markdownlint \
+    coc-prettier \
+    coc-rls \
+    coc-spell-checker \
     --only=prod \
- ;
-
-RUN nvim --headless +PlugInstall +qall
-
-RUN printf '{\n\
+ && curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+ && nvim --headless +PlugInstall +qall \
+ && printf '{\n\
   "coc.preferences.formatOnSaveFiletypes": ["*"],\n\
   "diagnostic.messageTarget": "echo",\n\
   "diagnostic-languageserver.filetypes": {\n\
     "sh": "shellcheck"\n\
   }\n\
 }' > /root/.config/nvim/coc-settings.json \
+ && echo "alias vi='nvim'" >> /root/.bashrc \
  ;
-
-RUN echo "alias vi='nvim'" >> /root/.bashrc
-
-CMD ["nvim"]

@@ -1,0 +1,256 @@
+# https://github.com/gpakosz/.tmux
+# (‑●‑●)> dual licensed under the WTFPL v2 license and the MIT license,
+#         without any warranty.
+#         Copyright 2012— Gregory Pakosz (@gpakosz).
+
+
+# -- navigation ----------------------------------------------------------------
+
+# if you're running tmux within iTerm2
+#   - and tmux is 1.9 or 1.9a
+#   - and iTerm2 is configured to let option key act as +Esc
+#   - and iTerm2 is configured to send [1;9A -> [1;9D for option + arrow keys
+# then uncomment the following line to make Meta + arrow keys mapping work
+#set -ga terminal-overrides "*:kUP3=\e[1;9A,*:kDN3=\e[1;9B,*:kRIT3=\e[1;9C,*:kLFT3=\e[1;9D"
+
+
+# -- windows & pane creation ---------------------------------------------------
+
+# new window retains current path, possible values are:
+#   - true
+#   - false (default)
+tmux_conf_new_window_retain_current_path=false
+
+# new pane retains current path, possible values are:
+#   - true (default)
+#   - false
+tmux_conf_new_pane_retain_current_path=true
+
+# new pane tries to reconnect ssh sessions (experimental), possible values are:
+#   - true
+#   - false (default)
+tmux_conf_new_pane_reconnect_ssh=false
+
+# prompt for session name when creating a new session, possible values are:
+#   - true
+#   - false (default)
+tmux_conf_new_session_prompt=false
+
+
+# -- display -------------------------------------------------------------------
+
+# Theme
+bg='#282828'
+fg='#ebdbb2'
+
+# Normal colors
+n_black='#282828'
+n_red='#cc241d'
+n_green='#98971a'
+n_yellow='#d79921'
+# n_blue='#458588'
+n_blue='#076678'
+n_magenta='#b16286'
+n_cyan='#689d6a'
+n_gray='#a89984'
+n_orange='#d65d0e'
+
+# Bright colors
+b_black='#928374'
+b_red='#fb4934'
+b_green='#b8bb26'
+b_yellow='#fabd2f'
+b_blue='#83a598'
+b_magenta='#d3869b'
+b_cyan='#8ec07c'
+b_orange='#fe8019'
+
+
+# RGB 24-bit colour support (tmux >= 2.2), possible values are:
+#  - true
+#  - false (default)
+tmux_conf_theme_24b_colour=true
+
+# window style
+tmux_conf_theme_window_fg='default'
+tmux_conf_theme_window_bg='default'
+
+# highlight focused pane (tmux >= 2.1), possible values are:
+#   - true
+#   - false (default)
+tmux_conf_theme_highlight_focused_pane=false
+
+# focused pane colours:
+tmux_conf_theme_focused_pane_fg='default'
+tmux_conf_theme_focused_pane_bg='default'
+
+# pane border style, possible values are:
+#   - thin (default)
+#   - fat
+tmux_conf_theme_pane_border_style=thin
+
+# pane borders colours:
+tmux_conf_theme_pane_border=colour237
+tmux_conf_theme_pane_active_border=colour246
+
+# pane indicator colours
+tmux_conf_theme_pane_indicator=$n_blue
+tmux_conf_theme_pane_active_indicator=$n_blue
+
+# status line style
+tmux_conf_theme_message_fg=colour223
+tmux_conf_theme_message_bg=colour239
+tmux_conf_theme_message_attr='none'
+
+# status line command style (<prefix> : Escape)
+tmux_conf_theme_message_command_fg=colour223
+tmux_conf_theme_message_command_bg=colour239
+tmux_conf_theme_message_command_attr='bold'
+
+# window modes style
+tmux_conf_theme_mode_fg=colour235
+tmux_conf_theme_mode_bg=colour246
+tmux_conf_theme_mode_attr='none'
+
+# status line style
+tmux_conf_theme_status_fg=colour223
+tmux_conf_theme_status_bg=colour239
+tmux_conf_theme_status_attr='none'
+
+# git branch in status bar
+home="#(if [[ $HOME == #{pane_current_path} ]]; then echo \"~\" ; else echo #{b:pane_current_path}; fi)"
+path="#($(tmux showw -v @show-full-window-path) == true && echo \"$(echo #{pane_current_path} | awk '{print \"~\"$1}' | cut -d/ -f-1,4-)\" || echo \"$home\")"
+git_status="#(cd #{pane_current_path}; git status --ignore-submodules -sb | head -n1 | tr -d \"# \" | cut -f1 -d\".\")"
+git_remote="#(cd #{pane_current_path}; if [[ `git config --get remote.origin.url` != '' ]]; then printf `git config --get remote.origin.url`; else echo ''; fi)"
+
+tmux_git_icon="#(cd #{pane_current_path}; \
+if [[ $git_remote == *'gitlab'* ]]; then \
+    printf ' '; \
+elif [[ $git_remote == *'github'* ]]; then \
+    printf ' '; \
+elif [[ $git_remote == *'bitbucket'* ]]; then \
+    printf ' '; \
+else \
+    printf ''; \
+fi)"
+
+# window status style
+tmux_conf_theme_window_status_fg=colour246
+tmux_conf_theme_window_status_bg=colour239
+tmux_conf_theme_window_status_attr='none'
+tmux_conf_theme_window_status_format=" #I $path "
+
+# window current status style
+tmux_conf_theme_window_status_current_fg=colour235
+tmux_conf_theme_window_status_current_bg=colour246
+tmux_conf_theme_window_status_current_attr='nobold'
+tmux_conf_theme_window_status_current_format=" #I $path "
+
+# window activity status style
+tmux_conf_theme_window_status_activity_fg=$n_yellow
+tmux_conf_theme_window_status_activity_bg=colour239
+tmux_conf_theme_window_status_activity_attr='none'
+
+# window bell status style
+tmux_conf_theme_window_status_bell_fg=$bg
+tmux_conf_theme_window_status_bell_bg=$fg
+tmux_conf_theme_window_status_bell_attr='blink,bold'
+
+# status left/right sections separators
+tmux_conf_theme_left_separator_main=''
+tmux_conf_theme_left_separator_sub=''
+tmux_conf_theme_right_separator_main=''
+tmux_conf_theme_right_separator_sub=''
+
+# status left/right content:
+tmux_conf_theme_status_left=" #S#{?window_bell_flag, ,}#{?window_zoomed_flag, ,}#{synchronized}#{prefix} "
+tmux_conf_theme_status_right="#(\
+if [[ $(expr \"$git_status\" : '.*') -gt 0 ]]; then \
+   echo ' $tmux_git_icon$git_status ' ; \
+fi)\
+|#(\
+if [[ '#{username}#{root}' == *'root'* ]]; then \
+    printf '#[fg=$b_red] root'; \
+else \
+    printf ' #{username}#{root}'; \
+fi) \
+| #{hostname} "
+
+# status left style
+tmux_conf_theme_status_left_fg="colour235"
+tmux_conf_theme_status_left_bg="colour246"
+tmux_conf_theme_status_left_attr='none'
+
+# status right style
+tmux_conf_theme_status_right_fg="colour246,colour246,colour235"
+tmux_conf_theme_status_right_bg="colour236,colour239,colour246"
+tmux_conf_theme_status_right_attr='none,none,none,none'
+
+# pairing indicator
+tmux_conf_theme_pairing='👓 '
+tmux_conf_theme_pairing_fg='none'
+tmux_conf_theme_pairing_bg='none'
+tmux_conf_theme_pairing_attr='none'
+
+# prefix indicator
+tmux_conf_theme_prefix=" "
+tmux_conf_theme_prefix_fg='$n_red'
+tmux_conf_theme_prefix_bg='$fg'
+tmux_conf_theme_prefix_attr='none'
+
+# root indicator
+tmux_conf_theme_root='!'
+tmux_conf_theme_root_fg='none'
+tmux_conf_theme_root_bg='none'
+tmux_conf_theme_root_attr='bold,blink'
+
+# synchronized indicator
+tmux_conf_theme_synchronized='🔒'
+tmux_conf_theme_synchronized_fg='none'
+tmux_conf_theme_synchronized_bg='none'
+tmux_conf_theme_synchronized_attr='none'
+
+# clock style (when you hit <prefix> + t)
+# you may want to use %I:%M %p in place of %R in tmux_conf_theme_status_right
+tmux_conf_theme_clock_colour='#00afff'  # light blue
+tmux_conf_theme_clock_style='24'
+
+
+# -- clipboard -----------------------------------------------------------------
+
+# in copy mode, copying selection also copies to the OS clipboard
+#   - true
+#   - false (default)
+# on macOS, this requires installing reattach-to-user-namespace, see README.md
+# on Linux, this requires xsel or xclip
+tmux_conf_copy_to_os_clipboard=true
+
+
+# -- user customizations -------------------------------------------------------
+# this is the place to override or undo settings
+
+# increase history size
+set -g history-limit 100000
+
+# start with mouse mode enabled
+set -g mouse on
+unbind-key -T copy-mode-vi MouseDragEnd1Pane
+
+# force Vi mode
+#   really you should export VISUAL or EDITOR environment variable, see manual
+set -g status-keys vi
+set -g mode-keys vi
+
+bind "\\"  split-window -v -p 25 -c "#{pane_current_path}"
+bind '|' split-window -h -p 25 -c "#{pane_current_path}"
+
+# move status line to top
+set -g status-position bottom
+
+if "test ! -d ~/.tmux/plugins/tpm" \
+   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
+
+# https://github.com/pwittchen/spotify-cli-linux
+# set -g @plugin 'pwittchen/tmux-plugin-spotify'
+
+run -b '~/.tmux/plugins/tpm/tpm'
