@@ -1,0 +1,46 @@
+# Disable the newline at the start of the prompt
+add_newline = true
+# Overwrite a default_prompt_order and  use custom prompt_order
+prompt_order = [
+    "time",
+    "git_branch",
+    "git_commit",
+    "git_state",
+    "git_status",
+    "hg_branch",
+    "docker_context",
+    "package",
+    "dotnet",
+    "elixir",
+    "elm",
+    "erlang",
+    "golang",
+    "haskell",
+    "java",
+    "julia",
+    "nim",
+    "nodejs",
+    "ocaml",
+    "php",
+    "purescript",
+    "python",
+    "ruby",
+    "rust",
+    "terraform",
+    "zig",
+    "nix_shell",
+    "conda",
+    "line_break",
+    "directory",
+    "line_break",
+    "character",
+]
+# Wait 10 milliseconds for starship to check files under the current directory.
+scan_timeout = 10
+
+[time]
+disabled = false
+format = "%H:%M:%S.%3f"
+
+[directory]
+truncate_to_repo = false
