@@ -1,6 +1,6 @@
 # vim-rust-ide
 
-![Alt text](https://github.com/casonadams/nvim-rust-ide/blob/master/nvim-rust-preview.png?raw=true "Title")
+![Alt text](https://github.com/casonadams/nvim-rust-ide/blob/master/nvim-rust.gif?raw=true "Title")
 
 My attempt to make vim more rust friendly from an IDE perspective
 
