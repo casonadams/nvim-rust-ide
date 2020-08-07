@@ -16,6 +16,7 @@ call plug#begin()
   Plug 'vim-airline/vim-airline'
   Plug 'mhinz/vim-startify'
   Plug 'ryanoasis/vim-devicons'
+  Plug 'tpope/vim-fugitive'
 call plug#end()
 " Plugins END
 "------------------------------------------------
@@ -110,7 +111,9 @@ set list
 set listchars=tab:»·,trail:·
 
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_extensions = ['branch', 'tabline']
+let g:airline#extensions#hunks#enabled=0
+let g:airline#extensions#branch#enabled=1
+let g:airline#extensions#coc#enabled = 1
 let g:airline_powerline_fonts = 1
 " Theme END
 "------------------------------------------------
