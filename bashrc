@@ -17,6 +17,8 @@ alias vi='nvim'
 
 export NOTES_DIR=~/Dropbox/notes/
 export EDITOR=nvim
+source $HOME/.key-bindings.bash
+export HISTSIZE=100000
 
 PATH="~/.cargo/bin:$PATH"
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
