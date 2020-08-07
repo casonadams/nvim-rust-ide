@@ -9,14 +9,14 @@ call plug#begin()
   Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
   Plug 'lotabout/skim.vim'
   Plug 'majutsushi/tagbar'
+  Plug 'mhinz/vim-startify'
   Plug 'morhetz/gruvbox'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'ryanoasis/vim-devicons'
   Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
   Plug 'tpope/vim-commentary'
-  Plug 'vim-airline/vim-airline'
-  Plug 'mhinz/vim-startify'
-  Plug 'ryanoasis/vim-devicons'
   Plug 'tpope/vim-fugitive'
+  Plug 'vim-airline/vim-airline'
 call plug#end()
 " Plugins END
 "------------------------------------------------
@@ -25,14 +25,14 @@ call plug#end()
 " Settings START
 let mapleader = "\<Space>"
 filetype plugin on
-set title
-set number
-set mouse=a
-set noswapfile
-set nobackup
-set nowritebackup
-set nocompatible
 set completeopt=longest,menuone
+set mouse=a
+set nobackup
+set nocompatible
+set noswapfile
+set nowritebackup
+set number
+set title
 set wrap
 setlocal wrap
 " Settings END
@@ -135,7 +135,7 @@ nmap <silent> <F3> :NERDTreeToggle<CR>
 "------------------------------------------------
 " Coc START
 " Give more space for displaying messages.
-set cmdheight=2
+set cmdheight=1
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
