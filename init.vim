@@ -2,22 +2,20 @@
 " Plugins START
 call plug#begin()
   Plug 'airblade/vim-gitgutter'
-  Plug 'APZelos/blamer.nvim'
   Plug 'cespare/vim-toml'
   Plug 'editorconfig/editorconfig-vim'
   Plug 'ervandew/supertab'
+  Plug 'itchyny/lightline.vim'
   Plug 'junegunn/vim-easy-align'
   Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
   Plug 'lotabout/skim.vim'
   Plug 'majutsushi/tagbar'
-  Plug 'mhinz/vim-startify'
+  Plug 'mengelbrecht/lightline-bufferline'
   Plug 'morhetz/gruvbox'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'ryanoasis/vim-devicons'
-  Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
   Plug 'tpope/vim-commentary'
   Plug 'tpope/vim-fugitive'
-  Plug 'vim-airline/vim-airline'
 call plug#end()
 " Plugins END
 "------------------------------------------------
@@ -41,13 +39,6 @@ setlocal wrap
 
 "------------------------------------------------
 " fuzzy finding START
-
-" Go to index of notes
-nnoremap <leader>ww :e $NOTES_DIR/index.md<CR>cd $NOTES_DIR
-
-command! -nargs=1 Ngrep grep "<args>" -g "*.md" $NOTES_DIR
-nnoremap <leader>nn :Ngrep
-
 nnoremap <C-p> :Rg<Cr>
 nnoremap <C-e> :Files<Cr>
 command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:70%:wrap', '?'))
@@ -70,30 +61,6 @@ autocmd BufReadPost *
 "------------------------------------------------
 
 "------------------------------------------------
-" startify START
-autocmd User Startified setlocal cursorline
-
-let g:startify_enable_special      = 0
-let g:startify_files_number        = 8
-let g:startify_relative_path       = 1
-let g:startify_change_to_dir       = 1
-let g:startify_update_oldfiles     = 1
-let g:startify_session_autoload    = 1
-let g:startify_session_persistence = 1
-
-let g:startify_skiplist = [
-  \ 'COMMIT_EDITMSG',
-  \ 'bundle/.*/doc',
-  \ '/data/repo/neovim/runtime/doc',
-  \ '/Users/mhi/local/vim/share/vim/vim74/doc',
-  \ ]
-
-let g:startify_custom_header = [ "  Vi the editor of the future" ]
-let g:startify_custom_footer = [ "  Vi the editor of the past" ]
-" startify END
-"------------------------------------------------
-
-"------------------------------------------------
 " SuperTab START
 let g:SuperTabMappingForward = '<S-tab>'
 let g:SuperTabMappingBackward = '<tab>'
@@ -104,21 +71,34 @@ let g:SuperTabMappingBackward = '<tab>'
 " Theme START
 syntax on
 colorscheme gruvbox
-let g:airline_theme = 'gruvbox'
 set background=dark
 set cursorline
 set hidden
 set list
 set listchars=tab:»·,trail:·
+set laststatus=1
+set showtabline=2
 
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#hunks#enabled=0
-let g:airline#extensions#branch#enabled=1
-let g:airline#extensions#coc#enabled = 1
-let g:airline_powerline_fonts = 1
+" let buffers be clickable
+let g:lightline#bufferline#clickable=1
 
-let g:blamer_enabled = 1
-let g:blamer_delay = 100
+let g:lightline = {
+  \ 'colorscheme': 'gruvbox',
+  \ 'tabline': {
+  \   'left': [ ['buffers'] ],
+  \   'right': [ ['none'] ]
+  \ },
+  \ 'component_expand': {
+  \   'buffers': 'lightline#bufferline#buffers'
+  \ },
+  \ 'component_raw': {
+  \   'buffers': 1
+  \ },
+  \ 'component_type': {
+  \   'buffers': 'tabsel'
+  \ }
+  \ }
+
 " Theme END
 "------------------------------------------------
 
@@ -128,11 +108,11 @@ let g:blamer_delay = 100
 au FileType markdown vmap <Leader><Bslash> :EasyAlign*<Bar><Enter>
 
 " Toggle between buffers
-nmap <Leader>= :bn<CR>
-nmap <Leader>- :bp<CR>
+nmap <Leader>bn :bn<CR>
+nmap <Leader>bp :bp<CR>
 
 nmap <silent> <F2> :TagbarToggle<CR>
-nmap <silent> <F3> :NERDTreeToggle<CR>
+nmap <silent> <F3> :CocCommand explorer<CR>
 " Remaps END
 "------------------------------------------------
 
@@ -242,7 +222,7 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+set statusline^=%{coc#status()}
 
 " Mappings using CoCList:
 " Show all diagnostics.
