@@ -14,6 +14,7 @@ export PATH
 
 # aliases
 alias vi='nvim'
+alias vim='nvim'
 
 export NOTES_DIR=~/Dropbox/notes/
 export EDITOR=nvim

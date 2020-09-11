@@ -77,16 +77,24 @@ set hidden
 set list
 set listchars=tab:»·,trail:·
 set laststatus=1
-set showtabline=2
+" set showtabline=2
 
 " let buffers be clickable
 let g:lightline#bufferline#clickable=1
+let g:lightline#bufferline#shorten_path=0
+let g:lightline#bufferline#min_buffer_count=1
 
 let g:lightline = {
   \ 'colorscheme': 'gruvbox',
   \ 'tabline': {
   \   'left': [ ['buffers'] ],
-  \   'right': [ ['none'] ]
+  \   'right': [ ['close'] ]
+  \ },
+  \ 'tabline_separator': {
+  \   'left': "", 'right': ""
+  \ },
+  \ 'tabline_subseparator': {
+  \   'left': "", 'right': ""
   \ },
   \ 'component_expand': {
   \   'buffers': 'lightline#bufferline#buffers'
