@@ -67,8 +67,8 @@ colorscheme gruvbox8
 hi StatusLine guibg=#928374 guifg=#3c3836
 hi SignColumn guibg=#282828
 
-hi CocErrorSign guibg=#282828 guifg=#fb4934
-hi CocWarningSign guibg=#282828 guifg=#fabd2f
+hi CocErrorSign guifg=#fb4934
+hi CocWarningSign guifg=#fabd2f
 hi CocInfoSign guifg=#83a598
 hi CocHintSign guifg=#504945
 hi CocErrorFloat guifg=#fb4934
